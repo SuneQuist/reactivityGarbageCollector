@@ -7,7 +7,27 @@
     <title>Document</title>
 </head>
 <body>
-    <main id="root"></main>
-    <script src="./scripts/app.js" async></script>
+    <main id="root">
+        <input type="text" @change="idfk" />
+        <select>
+            <option value="he">he {{goHigher}}</option>
+            <option value="fs">fs</option>
+            <option value="fsa">fsa</option>
+        </select>
+        <h1>awesome!</h1>
+         <div>
+             <section>
+                 <h1>{{idfk}} awesome {{goHigher}} I think? {{goHigher}}</h1>
+                 <h1 $placeholder="idfk">awesome I fsa?</h1>
+                 <h2>awesome I fsa?</h2>
+             </section>
+             <article>
+                 <h1>fsa I think?</h1>
+             </article>
+         </div>
+    </main>
+    <script src="./scripts/globalGarbageCollector.js" type="module" async></script>
+    <script src="./scripts/suscriberToGlobalGarbageCollector.js" type="module" async></script>
+    <script src="./scripts/render.js" type="module" defer></script>
 </body>
 </html>
