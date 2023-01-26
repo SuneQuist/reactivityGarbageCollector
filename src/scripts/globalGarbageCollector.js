@@ -69,11 +69,11 @@ GlobalPrivateSubscriberGarbageCollector.prototype.update = function(target, curr
     const _this = garbageInstance.get(this);
 
     for (let [_, instance] of _this.instances.entries()) {
-        if (target === instance.target) { accessGlobalFunction.remove(instance); }
+        if (target === instance.target) { globalGarbageCollector.remove(instance); }
     }
 
-    accessGlobalFunction.add(currentInstance);
+    globalGarbageCollector.add(currentInstance);
 }
 
 /** @returns - Access/Entry Point to Global Subscriber; */
-export const accessGlobalFunction = new GlobalPrivateSubscriberGarbageCollector();
+export const globalGarbageCollector = new GlobalPrivateSubscriberGarbageCollector();

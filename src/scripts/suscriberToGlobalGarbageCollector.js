@@ -1,4 +1,4 @@
-import { accessGlobalFunction } from "./globalGarbageCollector.js";
+import { globalGarbageCollector } from "./globalGarbageCollector.js";
 
 /**
  * Single Subsricber Instance (The function being called)
@@ -25,8 +25,8 @@ export function SubscribeToPrivateGarbageData(target) {
 
     tranferredGarbage.set(this, _toBeGarbagedInformation);
     
-    if (!accessGlobalFunction.lookup(target)) {
-        accessGlobalFunction.add(_toBeGarbagedInformation);
+    if (!globalGarbageCollector.lookup(target)) {
+        globalGarbageCollector.add(_toBeGarbagedInformation);
     }
 }
 
@@ -40,9 +40,9 @@ SubscribeToPrivateGarbageData.prototype.addNewKey = function(key) {
 
     if (!key) { return; }
     
-    if (accessGlobalFunction.lookup(_this.target, key)) { return; }
+    if (globalGarbageCollector.lookup(_this.target, key)) { return; }
 
-    accessGlobalFunction.update(_this.target, _this);
+    globalGarbageCollector.update(_this.target, _this);
     this.addKeyPair(key);
 }
 
@@ -54,7 +54,7 @@ SubscribeToPrivateGarbageData.prototype.addNewKey = function(key) {
 SubscribeToPrivateGarbageData.prototype.addKeyPair = function(checkForKey) {
     const _this = tranferredGarbage.get(this);
 
-    const checkIfAnythingIsAlreadyThere = accessGlobalFunction.lookup(_this.target);
+    const checkIfAnythingIsAlreadyThere = globalGarbageCollector.lookup(_this.target);
 
     if (checkIfAnythingIsAlreadyThere) {
         for (let [key, value] of checkIfAnythingIsAlreadyThere.perKeyEffect) {
@@ -68,7 +68,7 @@ SubscribeToPrivateGarbageData.prototype.addKeyPair = function(checkForKey) {
         _this.perKeyEffect.set(checkForKey, new Set());
     }
 
-    accessGlobalFunction.update(_this.target, _this);
+    globalGarbageCollector.update(_this.target, _this);
 }
 
 /**
@@ -79,7 +79,7 @@ SubscribeToPrivateGarbageData.prototype.addKeyPair = function(checkForKey) {
 SubscribeToPrivateGarbageData.prototype.getKey = function(key) {
     const _this = tranferredGarbage.get(this);
 
-    if (accessGlobalFunction.lookup(_this.target, key)) {
+    if (globalGarbageCollector.lookup(_this.target, key)) {
         for (let [keys, value] of _this.perKeyEffect.entries()) {
             if (keys === key) { return {key: keys, value}; }
         }
@@ -108,7 +108,7 @@ SubscribeToPrivateGarbageData.prototype.addEffect = function(key, effect) {
     _this.perKeyEffect.get(key).add(effect);
     
     // Call keypair again to update local, call update to do it globallyh
-    accessGlobalFunction.update(_this.target, _this);
+    globalGarbageCollector.update(_this.target, _this);
 }
 
 /**
@@ -124,7 +124,7 @@ SubscribeToPrivateGarbageData.prototype.removeEffect = function(key, effect) {
     }
 
     this.addKeyPair();
-    accessGlobalFunction.update(_this.target, _this);
+    globalGarbageCollector.update(_this.target, _this);
 }
 
 /**
