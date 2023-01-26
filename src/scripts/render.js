@@ -151,43 +151,43 @@ function createReactiveProxy(target, key, value) {
  * Testing Area
  */
 
-window.addEventListener("DOMContentLoaded", (event) => {
-    const root = document.getElementById("root");
+// window.addEventListener("DOMContentLoaded", (event) => {
+//     // const root = document.getElementById("root");
 
-    const rootShadow = root.attachShadow({mode: "open"});
-    const shadow = rootShadow;
+//     // const rootShadow = root.attachShadow({mode: "open"});
+//     // const shadow = rootShadow;
 
-    const in1 = document.createElement("input")
-    in1.setAttribute("value", "fasfs");
-    shadow.append(in1)
+//     const in1 = document.createElement("input")
+//     in1.setAttribute("value", "fasfs");
+//     shadow.append(in1)
     
-    const in2 = document.createElement("div")
-    shadow.append(in2)
+//     const in2 = document.createElement("div")
+//     shadow.append(in2)
 
-    const in3 = document.createElement("h1")
-    in3.innerHTML = "gsfsa"
-    in2.append(in3)
+//     const in3 = document.createElement("h1")
+//     in3.innerHTML = "gsfsa"
+//     in2.append(in3)
 
-    const childNodes = Array.from(shadow.childNodes);
+//     const childNodes = Array.from(shadow.childNodes);
     
-    const HTML = `
-    <h1>awesome!</h1>
-    <div>
-        <section>
-            <h1>awesome I think?</h1>
-            <h1>awesome I fsa?</h1>
-            <h2>awesome I fsa?</h2>
-        </section>
-        <article>
-            <h1>fsa I think?</h1>
-        </article>
-    </div>
-    `
+//     const HTML = `
+//     <h1>awesome!</h1>
+//     <div>
+//         <section>
+//             <h1>awesome I think?</h1>
+//             <h1>awesome I fsa?</h1>
+//             <h2>awesome I fsa?</h2>
+//         </section>
+//         <article>
+//             <h1>fsa I think?</h1>
+//         </article>
+//     </div>
+//     `
     
-    shadow.innerHTML += HTML;
+//     shadow.innerHTML += HTML;
 
-    console.log(makeNodeShadowTree(shadow))
-})
+//     // makeNodeShadowTree(shadow)
+// })
 
 const root = document.getElementById("root");
 const subbed = Subscriber("fs")
@@ -205,9 +205,19 @@ but.value = sfs.idfk;
 but.addEventListener("input", (e) => {
     setVal(e.target.value);
     but.value = sfs.idfk;
+    // console.log(accessGlobalFunction.lookup(subbed.getSelf()))
 })
 
 const idkValue = document.createElement("div");
 // idkValue.innerHTML = subbed.getKey(objs3).value;
 document.body.append(idkValue)
 subbed.addEffect(sfs, () => { idkValue.innerHTML = sfs.idfk });
+const idk2Value = document.createElement("div");
+// idkValue.innerHTML = subbed.getKey(objs3).value;
+document.body.append(idk2Value)
+subbed.addEffect(sfs, () => { idk2Value.innerHTML = sfs.idfk });
+const elm = document.querySelectorAll("[placeholder]");
+
+for (let i = 0; i < elm.length; i++) {
+    subbed.addEffect(sfs, () => { elm[i].innerHTML = sfs[elm[i].getAttribute("placeholder")] });
+}

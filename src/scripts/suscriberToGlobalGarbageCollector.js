@@ -146,21 +146,21 @@ SubscribeToPrivateGarbageData.prototype.getEffect = function(key, effect) {
  * @param {String} key
  * @returns - Execution of all functions in specific effect;
  */
-// SubscribeToPrivateGarbageData.prototype.iterateOverCallbacks = function(key) {
-//     const _this = tranferredGarbage.get(this);
-
-//     for (const [_, value] of _this.perKeyEffect.get(key).entries()) {
-//         if (typeof value.func === "function") { value.func(value.node); }
-//     }
-// }
-
 SubscribeToPrivateGarbageData.prototype.iterateOverCallbacks = function(key) {
     const _this = tranferredGarbage.get(this);
 
     for (const [_, value] of _this.perKeyEffect.get(key).entries()) {
-        if (typeof value === "function") { value(); }
+        if (typeof value.func === "function") { value.func(value.node); }
     }
 }
+
+// SubscribeToPrivateGarbageData.prototype.iterateOverCallbacks = function(key) {
+//     const _this = tranferredGarbage.get(this);
+
+//     for (const [_, value] of _this.perKeyEffect.get(key).entries()) {
+//         if (typeof value === "function") { value(); }
+//     }
+// }
 
 /**
  * 

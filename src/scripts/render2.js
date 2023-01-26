@@ -35,6 +35,7 @@ class Node {
         this.target = null;
         this.stack = null;
         this.targetProxy = null;
+        this.oldHTML = "";
     }
 
     setNext(value) { this.nextNode = value || null; }
@@ -42,10 +43,49 @@ class Node {
     setOrigin(value) { this.origin = value || null; }
     setParent(value) { this.parent = value || null; }
     setChild(value) { this.child = value || null; }
+    setOldHTML(value) { this.oldHTML = value || ""; }
+
     setTargetStack(target, stack) { 
         this.target = target;
         this.stack = stack;
-     }
+    }
+
+    insertHTML(node) {
+        let specials = new Set();
+        const replacingString = new RegExp(`\{{|\}}`, "gi");
+    
+        if (!node.child) {
+            for (let key of node.stack) {
+                const matchingString = new RegExp(`(\{{)${key[0]}(\}})`, 'gi');
+                const special = node.oldHTML.match(matchingString)?.map(val => {return val.replace(replacingString, '')})
+                
+                if (special) { specials.add(...special); }
+
+                let newHTML = node.oldHTML;
+                for (let prop of specials) {
+                    const matchingString = new RegExp(`(\{{)${prop}(\}})`, 'gi');
+                    
+                    newHTML = newHTML.replace(matchingString, node.stack.get(prop).self[prop]);
+                    
+                    node.node.innerHTML = newHTML.replace(matchingString, node.stack.get(prop).self[prop]);
+                }
+
+            }
+        
+            if (specials.size > 0) {
+                for (let key of specials) {
+                    const ownKey = node.target.getKey(node.stack.get(key)?.self) || null;
+            
+                    if (ownKey) { 
+                        ownKey.value.add({
+                            node: node,
+                            func: this.insertHTML
+                        });
+                    }
+                }
+            }
+        }
+    }    
 
     setEffect() {
         let targetType = [];
@@ -60,7 +100,7 @@ class Node {
             }
 
             const stackAttr = this.stack.get(getAttr);
-            if (stackAttr) {
+            if (stackAttr && attr.type !== "@change") {
                 this.attribute = attr.change || null;
                 this.value = stackAttr?.value;
                 this.key = this.target.getKey(stackAttr?.self) || null;
@@ -72,6 +112,15 @@ class Node {
                         func: attr.func
                     })
                 }
+            }
+
+            if (attr.type === "@change") {
+                this.attribute = attr.change || null;
+                this.value = stackAttr?.value;
+                this.key = this.target.getKey(stackAttr?.self) || null;
+                this.targetProxy = stackAttr;
+
+                change(this.returnNode());
             }
         }
     }
@@ -90,43 +139,8 @@ class Node {
             specialChanges: this.specialChanges,
             target: this.target,
             stack: this.stack,
-            targetProxy: this.targetProxy
-        }
-    }
-}
-
-function insertHTML(node) {
-    let setSpecials = new Set();
-    let specials = [];
-    const replacingString = new RegExp(`\{{|\}}`, "gi");
-
-    for (let key of node.stack) {
-        const matchingString = new RegExp(`(\{{)${key[0]}(\}})`, 'gi');
-        const special = node.node.innerHTML.match(matchingString)
-        
-        if (special) { specials.push(...special); }
-        if (special) { setSpecials.add(...special); }
-    }
-
-    if (specials.length > 0) {
-        for (let key of specials) {
-            const newKey = key.replace(replacingString, "");
-            const matchingString = new RegExp(`(\{{)${newKey}(\}})`, 'gi');
-
-            node.node.innerHTML = node.node.innerHTML.replace(matchingString, node.stack.get(newKey)?.value);
-        }
-    }
-
-    if (setSpecials.size > 0) {
-        for (let prop of setSpecials) {
-            const propWithout = prop.replace(replacingString, "");
-            const ownKey = node.target.getKey(node.stack.get(propWithout)?.self) || null;
-            if (ownKey) { 
-                ownKey.value.add({
-                    node: node,
-                    func: insertHTML
-                })
-             }
+            targetProxy: this.targetProxy,
+            oldHTML: this.oldHTML
         }
     }
 }
@@ -157,6 +171,7 @@ function makeNodeShadowTree(tree, stack, target, origin = null) {
         }
         
         currentNode.setOrigin(originNode);
+        currentNode.setOldHTML(children[i].innerHTML);
 
         if (children[i].parentNode?.activeElement !== undefined) {
             currentNode.setOrigin(children[i].parentNode);
@@ -171,7 +186,7 @@ function makeNodeShadowTree(tree, stack, target, origin = null) {
         }
 
         currentNode.setEffect();
-        insertHTML(currentNode.returnNode());
+        currentNode.insertHTML(currentNode.returnNode());
         
         allInCurrentTreeSection.push(currentNode.returnNode());
     }
