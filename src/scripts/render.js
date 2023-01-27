@@ -1,9 +1,9 @@
 import { createReactiveProxy } from "./subToSub.js";
-import { change, attributes } from "./attributes.js";
+import { attributes } from "./attributes.js";
 
 class Node {
     constructor(elm) {
-        this.node = elm || null;
+        this.elm = elm || null;
         this.nextNode = null;
         this.prevNode = null;
         this.origin = null;
@@ -12,7 +12,7 @@ class Node {
 
         this.attribute = null;
         this.value = null;
-        this.key = null;
+        this.self = null;
         this.specialChanges = [];
         this.target = null;
         this.stack = null;
@@ -49,7 +49,7 @@ class Node {
                     
                     newHTML = newHTML.replace(matchingString, node.stack.get(prop).self[prop]);
                     
-                    node.node.innerHTML = newHTML.replace(matchingString, node.stack.get(prop).self[prop]);
+                    node.elm.innerHTML = newHTML.replace(matchingString, node.stack.get(prop).self[prop]);
                 }
 
             }
@@ -73,43 +73,43 @@ class Node {
         let targetType = [];
         for (let i = 0; i < Object.entries(attributes).length; i++) {
             const attr = attributes[i];
-            const getAttr = this.node.getAttribute(attr.type) || null;
+            const getAttr = this.elm.getAttribute(attr.type) || null;
 
             if (getAttr) { targetType.push(attr.type); }
 
             if (targetType.length > 1) {
-                throw new Error("There can only be one special effect per element");
+                throw new Error("There can only be one attribute per element");
             }
 
             const stackAttr = this.stack.get(getAttr);
-            if (stackAttr && attr.type !== "@change") {
-                this.attribute = attr.change || null;
-                this.value = stackAttr?.value;
-                this.key = this.target.getKey(stackAttr?.self) || null;
-                this.targetProxy = stackAttr;
+            for (let prop of attributes) {
+                this.createAttribute(prop.type, prop.func, prop.reactive, attr, stackAttr, getAttr);
+            }
+        }
+    }
 
-                if (this.key) {
-                    this.key.value.add({
+    createAttribute(type, func, change, attr, stackAttr, getAttr) {
+        if (attr.type === type) {
+            this.attribute = attr.change || null;
+            this.value = stackAttr?.value || getAttr;
+            this.self = this.target.getKey(stackAttr?.self) || null;
+            this.targetProxy = stackAttr;
+
+            if (change) { func(this.returnNode()); }
+            if (!change) {
+                if (this.self) {
+                    this.self.value.add({
                         node: this.returnNode(),
                         func: attr.func
                     })
                 }
-            }
-
-            if (attr.type === "@change") {
-                this.attribute = attr.change || null;
-                this.value = stackAttr?.value;
-                this.key = this.target.getKey(stackAttr?.self) || null;
-                this.targetProxy = stackAttr;
-
-                change(this.returnNode());
             }
         }
     }
 
     returnNode() {
         return {
-            node: this.node,
+            elm: this.elm,
             next: this.nextNode,
             prev: this.prevNode,
             origin: this.origin,
@@ -117,7 +117,7 @@ class Node {
             child: this.child,
             attribute: this.attribute,
             value: this.value,
-            key: this.key,
+            self: this.self,
             specialChanges: this.specialChanges,
             target: this.target,
             stack: this.stack,
@@ -176,7 +176,7 @@ function makeNodeShadowTree(tree, stack, target, origin = null) {
     return allInCurrentTreeSection;
 }
 
-export default function suqu(html, target, stack) {
+export default function suqu(html, target, stack, sheet) {
     const stackedProxies = new Map();
     for (let property in stack) {
         const [proxy, setProxy] = createReactiveProxy(target, property, stack[property]);
@@ -185,6 +185,7 @@ export default function suqu(html, target, stack) {
 
     const shadow = html.attachShadow({mode: "open"});
     shadow.innerHTML = html.innerHTML;
+    shadow.adoptedStyleSheets = [ sheet ];
     makeNodeShadowTree(shadow, stackedProxies, target);
 
     if (stackedProxies.size > 0) {

@@ -1,0 +1,28 @@
+#root {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.boss {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.input-change {
+    border-radius: 5px;
+    outline: none;
+    width: 200px;
+    height: 2rem;
+    border: 2px solid #000000;
+    padding: 1rem 1rem;
+}
+
+.idfk {
+    color: black;
+}
