@@ -1,11 +1,13 @@
 # suqu
 ## _A small Vue based reactivity system with a quick renderer_
 
-<p align="center" width="500px" height="500px"><img src="./readme-files/suqu.svg" /><p>
+<p align="center" width="150px" height="150px"><img src="./readme-files/suqu.svg" /><p>
 
 ```read
     The system was made in 3 days and therefor not optimized for everything.
-    Though we do have two features to play around with, and you can eventually also try to go and add your own for fun.
+    Though we do have two features to play around with
+    and you can eventually also try to go and add your
+    own for fun.
 ```
 
 > $placeholder
