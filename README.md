@@ -1,7 +1,7 @@
 # suqu
 ## _A small Vue based reactivity system with a quick renderer_
 
-<p align="center" width="150px" height="150px"><img src="./readme-files/suqu.svg" width="150px" height="150px" /><p>
+<p align="center" width="150px" height="150px"><img src="./suqu.svg" width="150px" height="150px" /><p>
 
 ```read
     The system was made in 3 days and therefor not optimized for everything.
