@@ -1,14 +1,19 @@
 # suqu
-## _A small Vue based reactivity system with a quick renderer_
+## _☕ Based on Vue's WeakMap reactivity subscriber system, using WeakMap for privacy and shadow tree for DOM rendeering._
+
+<br />
 
 <p align="center" width="150px" height="150px"><img src="./suqu.svg" width="150px" height="150px" /><p>
 
+<br />
+
 ```read
-    The system was made in 3 days and therefor not optimized for everything.
-    Though we do have two features to play around with
-    and you can eventually also try to go and add your
-    own for fun.
+The system was made in 3 days and therefor not optimized for everything. 
+Though we do have two features to play around with and you can eventually also try to go and add your own for fun.
 ```
+
+<br />
+<br />
 
 > $placeholder
 ```read
@@ -19,6 +24,10 @@
 ```read
     Access to changes values of the diffrent variables.
 ```
+
+<br />
+<br />
+
 > Scripts
 
 - scripts/app.js # Is where the setup is done.
@@ -34,5 +43,7 @@
 - scripts/render.js # Is where the html is stored in a shadow tree and re-renders, etc.
 
 - scripts/firstReactiveRender.js # Works as well but is a test area, and needs a line in the instance script to be uncommented to work.
+
+<br />
 
 ### Have fun!
