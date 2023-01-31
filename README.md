@@ -3,7 +3,7 @@
 
 <br />
 
-<p align="center" width="150px" height="150px"><img src="./suqu.svg" width="150px" height="150px" /><p>
+<p align="center" width="150px" height="150px"><img src="./logo.png" width="150px" height="150px" /><p>
 
 <br />
 
