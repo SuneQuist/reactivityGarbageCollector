@@ -1,4 +1,5 @@
-<p align="center"><img src="./logo.png" width="128px" height="128px" /></p><br />
+<br /><p align="center"><img src="./logo.png" width="128px" height="128px" /></p><br />
+
 ## _☕ Suqu is based on Vue's WeakMap reactivity subscriber system, using WeakMap for privacy and shadow tree for DOM rendeering._
 
 <br />
